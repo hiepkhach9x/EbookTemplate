@@ -1,6 +1,22 @@
 <resources>
-    <string name="app_name">EbookTemplate</string>
+    <string name="app_name">eBook Template</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Cài đặt</string>
+
+
+    <!-- Common string -->
+    <string name="common_about">Giới thiệu</string>
+    <string name="common_store">Store</string>
+    <string name="common_truyenkhac">Truyện khác</string>
+    <string name="common_tienhiep">Truyện tiên hiệp</string>
+    <string name="common_kiemhiep">Truyện kiếm hiệp</string>
+    <string name="common_ngontinh">Truyện ngôn tình</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

@@ -2,4 +2,51 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- common -->
+    <dimen name="common_text_size_10sp">10sp</dimen>
+    <dimen name="common_text_size_12sp">12sp</dimen>
+    <dimen name="common_text_size_14sp">14sp</dimen>
+    <dimen name="common_text_size_16sp">16sp</dimen>
+    <dimen name="common_text_size_18sp">18sp</dimen>
+    <dimen name="common_text_size_20sp">20sp</dimen>
+    <dimen name="common_text_size_25sp">25sp</dimen>
+    <dimen name="common_text_size_40sp">40sp</dimen>
+    <dimen name="common_text_size_80sp">80sp</dimen>
+    <dimen name="common_size_1dp">1dp</dimen>
+    <dimen name="common_size_2dp">2dp</dimen>
+    <dimen name="common_size_4dp">4dp</dimen>
+    <dimen name="common_size_5dp">5dp</dimen>
+    <dimen name="common_size_6dp">6dp</dimen>
+    <dimen name="common_size_8dp">8dp</dimen>
+    <dimen name="common_size_10dp">10dp</dimen>
+    <dimen name="common_size_12dp">12dp</dimen>
+    <dimen name="common_size_15dp">15dp</dimen>
+    <dimen name="common_size_16dp">16dp</dimen>
+    <dimen name="common_size_20dp">20dp</dimen>
+    <dimen name="common_size_24dp">24dp</dimen>
+    <dimen name="common_size_32dp">32dp</dimen>
+    <dimen name="common_size_35dp">35dp</dimen>
+    <dimen name="common_size_40dp">40dp</dimen>
+    <dimen name="common_size_45dp">45dp</dimen>
+    <dimen name="common_size_48dp">48dp</dimen>
+    <dimen name="common_size_52dp">52dp</dimen>
+    <dimen name="common_size_56dp">56dp</dimen>
+    <dimen name="common_size_60dp">60dp</dimen>
+    <dimen name="common_size_64dp">64dp</dimen>
+    <dimen name="common_size_68dp">68dp</dimen>
+    <dimen name="common_size_72dp">72dp</dimen>
+    <dimen name="common_size_80dp">80dp</dimen>
+    <dimen name="common_size_88dp">88dp</dimen>
+    <dimen name="common_size_90dp">90dp</dimen>
+    <dimen name="common_size_96dp">96dp</dimen>
+    <dimen name="common_size_98dp">98dp</dimen>
+    <dimen name="common_size_104dp">104dp</dimen>
+    <dimen name="common_size_112dp">112dp</dimen>
+    <dimen name="common_size_120dp">120dp</dimen>
+    <dimen name="common_size_128dp">128dp</dimen>
+    <dimen name="common_size_136dp">136dp</dimen>
+    <dimen name="common_size_160dp">160dp</dimen>
+    <dimen name="common_size_240dp">240dp</dimen>
+
 </resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blueSky">#0b78b7</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="black_light">#F333</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>
