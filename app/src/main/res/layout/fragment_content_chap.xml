@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ContentBookView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ctcstudio.ebooktemplate.view.ContentBookView
+        android:id="@+id/data_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        ContentBookView:bookBackground="@color/white"
+        ContentBookView:paddingBottom="@dimen/common_size_10dp"
+        ContentBookView:paddingLeft="@dimen/common_size_15dp"
+        ContentBookView:paddingRight="@dimen/common_size_15dp"
+        ContentBookView:paddingTop="@dimen/common_size_10dp"
+        ContentBookView:textColor="@color/black"
+        ContentBookView:textContent="@string/app_name"
+        ContentBookView:textFont="Roboto-Regular.ttf" />
+</LinearLayout>

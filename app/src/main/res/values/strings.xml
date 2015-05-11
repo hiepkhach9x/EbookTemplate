@@ -2,7 +2,9 @@
     <string name="app_name">eBook Template</string>
 
     <string name="action_settings">Cài đặt</string>
-
+    <string name="action_previous">Previous</string>
+    <string name="action_next">Next</string>
+    <string name="action_finish">Finish</string>
 
     <!-- Common string -->
     <string name="common_about">Giới thiệu</string>
@@ -11,6 +13,8 @@
     <string name="common_tienhiep">Truyện tiên hiệp</string>
     <string name="common_kiemhiep">Truyện kiếm hiệp</string>
     <string name="common_ngontinh">Truyện ngôn tình</string>
+    <string name="common_page_position" formatted="false">%d/%d</string>
+    <string name="common_chap_name">Chương %d</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

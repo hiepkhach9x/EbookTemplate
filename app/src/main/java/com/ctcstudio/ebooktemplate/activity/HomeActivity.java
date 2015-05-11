@@ -27,7 +27,9 @@ import java.util.List;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.TOCReference;
 
-
+/**
+ * Created by HungHN on 5/9/2015.
+ */
 public class HomeActivity extends ActionBarActivity {
 
     private ActionBar mActionBar;
@@ -47,6 +49,7 @@ public class HomeActivity extends ActionBarActivity {
     private ArrayList<String> mListchap = new ArrayList<>();
 
     private ArrayAdapter<String> chapAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class HomeActivity extends ActionBarActivity {
                 try {
                     Intent intent = new Intent(HomeActivity.this, ContentChapActivity.class);
                     intent.putExtra(Variables.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
+                    intent.putExtra(Variables.CHAP_NAME, position + 1);
                     startActivity(intent);
                 } catch (IOException e) {
                 }

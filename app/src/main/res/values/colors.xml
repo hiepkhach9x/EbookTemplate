@@ -6,4 +6,5 @@
     <color name="black_light">#F333</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="blueSky_overlay">#500b78b7</color>
 </resources>

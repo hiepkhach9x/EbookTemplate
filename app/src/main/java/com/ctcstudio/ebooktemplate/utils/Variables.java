@@ -15,7 +15,13 @@ public class Variables {
 
     public final static String DATA_CHAP = "DATA_CHAP";
 
+    public final static String CHAP_NAME = "CHAP_NAME";
+
     public final static HashMap<String, Book> HM_DATA_BOOK = new HashMap<String, Book>();
 
     public final static String strMarket = "market://search?q=pub:CTC+Studio";
+
+    public final static int COMPLEX_UNIT_SP = 1;
+
+    public final static int COMPLEX_UNIT_DIP = 2;
 }
