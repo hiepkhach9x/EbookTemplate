@@ -1,6 +1,7 @@
 package com.ctcstudio.ebooktemplate.activity;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Display;
@@ -17,7 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,9 +32,9 @@ import com.ctcstudio.ebooktemplate.adapter.SlidePagerAdapter;
 import com.ctcstudio.ebooktemplate.entities.SettingBook;
 import com.ctcstudio.ebooktemplate.fragment.ContentChapFragment;
 import com.ctcstudio.ebooktemplate.task.SplitTextTask;
+import com.ctcstudio.ebooktemplate.utils.Constant;
 import com.ctcstudio.ebooktemplate.utils.LogUtils;
 import com.ctcstudio.ebooktemplate.utils.SystemUiHider;
-import com.ctcstudio.ebooktemplate.utils.Variables;
 
 import java.util.ArrayList;
 
@@ -67,15 +73,16 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     private int height;
 
+    private int fontSize = 20;
     private int textSize = 20;
 
     private int textColor = 0xffA7573E;
 
     private int pageColor = 0xffFDF8A6;
 
-    private int topPadding = 10, leftPadding = 15;
+    private int topPadding = 10, leftPadding = 10;
 
-    private int bottomPadding = 10, rightPadding = 15;
+    private int bottomPadding = 10, rightPadding = 10;
 
     private float spacingAdd = 10f, spacingMult = 1.0f;
 
@@ -94,8 +101,8 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_content_chap);
-        dataContent = getIntent().getStringExtra(Variables.DATA_CHAP);
-        posChap = getIntent().getIntExtra(Variables.CHAP_NAME, posChap);
+        dataContent = getIntent().getStringExtra(Constant.DATA_CHAP);
+        posChap = getIntent().getIntExtra(Constant.CHAP_NAME, posChap);
         dataContent = Html.fromHtml(dataContent).toString().replaceAll(System.getProperty("line.separator") + System.getProperty("line.separator"), System.getProperty("line.separator"));
         dataContent.replace("  ", " ");
 
@@ -124,15 +131,15 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
 
-        textSize = convertDimension(Variables.COMPLEX_UNIT_SP, textSize);
-        topPadding = convertDimension(Variables.COMPLEX_UNIT_DIP, topPadding);
-        bottomPadding = convertDimension(Variables.COMPLEX_UNIT_DIP, bottomPadding);
-        leftPadding = convertDimension(Variables.COMPLEX_UNIT_DIP, leftPadding);
-        rightPadding = convertDimension(Variables.COMPLEX_UNIT_DIP, rightPadding);
+        textColor = getResources().getColor(R.color.sepia);
+        pageColor = getResources().getColor(R.color.sepia_overlay);
+        textSize = convertDimension(Constant.COMPLEX_UNIT_SP, fontSize);
+        topPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, topPadding);
+        bottomPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, bottomPadding);
+        leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, leftPadding);
+        rightPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, rightPadding);
 
         settingBook = new SettingBook(width, height, textSize, textColor, pageColor, topPadding, bottomPadding, leftPadding, rightPadding, spacingAdd, spacingMult, font);
-
-        LogUtils.e(Variables.TAG, settingBook.toString());
 
         slidePagerAdapter = new SlidePagerAdapter(fragmentManager, listPage, settingBook);
         viewPager.setAdapter(slidePagerAdapter);
@@ -151,10 +158,10 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         float scaledDensity = getResources().getDisplayMetrics().scaledDensity;
         int returnSize = 0;
         switch (type) {
-            case Variables.COMPLEX_UNIT_SP:
+            case Constant.COMPLEX_UNIT_SP:
                 returnSize = (int) (size * scaledDensity);
                 break;
-            case Variables.COMPLEX_UNIT_DIP:
+            case Constant.COMPLEX_UNIT_DIP:
                 returnSize = (int) (size * density);
                 break;
         }
@@ -213,7 +220,7 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtils.e(Variables.TAG, "CLICK");
+                LogUtils.e(Constant.TAG, "CLICK");
                 if (TOGGLE_ON_CLICK) {
                     mSystemUiHider.toggle();
                 } else {
@@ -248,7 +255,204 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }
+        if (id == R.id.action_font_setting) {
+            showFontSetting();
+            return true;
+        }
+        if (id == R.id.action_next) {
+            return true;
+        }
+        if (id == R.id.action_previous) {
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFontSetting() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_setting);
+        final TextView fontTextView = (TextView) dialog.findViewById(R.id.font);
+        final TextView margins = (TextView) dialog.findViewById(R.id.margins);
+        final TextView lineSpace = (TextView) dialog.findViewById(R.id.line_space);
+        final TextView textFontSize = (TextView) dialog.findViewById(R.id.textSize);
+        Button btnOk = (Button) dialog.findViewById(R.id.ok);
+        ImageButton btnInCrease = (ImageButton) dialog.findViewById(R.id.inCrease);
+        ImageButton btnDeCrease = (ImageButton) dialog.findViewById(R.id.deCrease);
+        Button backgroundWhite = (Button) dialog.findViewById(R.id.background_white);
+        Button backgroundSepia = (Button) dialog.findViewById(R.id.background_sepia);
+        Button backgroundBlack = (Button) dialog.findViewById(R.id.background_black);
+        final ImageView imgWhite = (ImageView) dialog.findViewById(R.id.state_background_white);
+        final ImageView imgSepia = (ImageView) dialog.findViewById(R.id.state_background_sepia);
+        final ImageView imgBlack = (ImageView) dialog.findViewById(R.id.state_background_black);
+
+        textFontSize.setText(fontSize + "");
+        if (textColor == getResources().getColor(R.color.white_light)) {
+            imgWhite.setImageResource(R.drawable.ic_circle);
+            imgBlack.setImageResource(R.drawable.ic_circle_v);
+            imgSepia.setImageResource(R.drawable.ic_circle);
+        } else if (textColor == getResources().getColor(R.color.sepia)) {
+            imgWhite.setImageResource(R.drawable.ic_circle);
+            imgBlack.setImageResource(R.drawable.ic_circle);
+            imgSepia.setImageResource(R.drawable.ic_circle_v);
+
+        } else if (textColor == getResources().getColor(R.color.black)) {
+            imgWhite.setImageResource(R.drawable.ic_circle_v);
+            imgBlack.setImageResource(R.drawable.ic_circle);
+            imgSepia.setImageResource(R.drawable.ic_circle);
+        }
+        if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 10)) {
+            margins.setText(R.string.common_narrow);
+
+        } else if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 20)) {
+            margins.setText(R.string.common_normal);
+
+        } else if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 30)) {
+            margins.setText(R.string.common_wide);
+        }
+        if (spacingMult == 1.0f) {
+            lineSpace.setText(R.string.common_narrow);
+
+        } else if (spacingMult == 1.5f) {
+            lineSpace.setText(R.string.common_normal);
+
+        } else if (spacingMult == 2.0f) {
+            lineSpace.setText(R.string.common_wide);
+        }
+        fontTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow(v, fontTextView, R.menu.menu_font);
+            }
+        });
+        margins.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow(v, margins, R.menu.menu_margin);
+            }
+        });
+        lineSpace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupWindow(v, lineSpace, R.menu.menu_margin);
+            }
+        });
+        btnInCrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fontSize++;
+                textFontSize.setText(fontSize + "");
+            }
+        });
+        btnDeCrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fontSize--;
+                textFontSize.setText(fontSize + "");
+            }
+        });
+        backgroundWhite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textColor = getResources().getColor(R.color.black);
+                pageColor = getResources().getColor(R.color.white);
+                imgWhite.setImageResource(R.drawable.ic_circle_v);
+                imgBlack.setImageResource(R.drawable.ic_circle);
+                imgSepia.setImageResource(R.drawable.ic_circle);
+            }
+        });
+        backgroundSepia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textColor = getResources().getColor(R.color.sepia);
+                pageColor = getResources().getColor(R.color.sepia_overlay);
+                imgWhite.setImageResource(R.drawable.ic_circle);
+                imgBlack.setImageResource(R.drawable.ic_circle);
+                imgSepia.setImageResource(R.drawable.ic_circle_v);
+            }
+        });
+        backgroundBlack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textColor = getResources().getColor(R.color.white_light);
+                pageColor = getResources().getColor(R.color.black);
+                imgWhite.setImageResource(R.drawable.ic_circle);
+                imgBlack.setImageResource(R.drawable.ic_circle_v);
+                imgSepia.setImageResource(R.drawable.ic_circle);
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (margins.getText().toString().trim().equals(getString(R.string.common_narrow).trim())) {
+                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 10);
+
+                } else if (margins.getText().toString().trim().equals(getString(R.string.common_normal).trim())) {
+                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 20);
+
+                } else if (margins.getText().toString().trim().equals(getString(R.string.common_wide).trim())) {
+                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 30);
+                }
+                if (lineSpace.getText().toString().trim().equals(getString(R.string.common_narrow).trim())) {
+                    spacingMult = 1.0f;
+
+                } else if (lineSpace.getText().toString().trim().equals(getString(R.string.common_normal).trim())) {
+                    spacingMult = 1.5f;
+
+                } else if (lineSpace.getText().toString().trim().equals(getString(R.string.common_wide).trim())) {
+                    spacingMult = 2.0f;
+                }
+                settingBook.setTextColor(textColor);
+                settingBook.setPageColor(pageColor);
+                textSize = convertDimension(Constant.COMPLEX_UNIT_SP, fontSize);
+                settingBook.setTextSize(textSize);
+                settingBook.setLeftPadding(leftPadding);
+                settingBook.setRightPadding(rightPadding);
+                settingBook.setSpacingMult(spacingMult);
+                mProgressBar.setVisibility(View.VISIBLE);
+                new SplitTextTask(ContentChapActivity.this, dataContent, settingBook, ContentChapActivity.this).execute();
+                dialog.dismiss();
+
+            }
+        });
+        dialog.show();
+    }
+
+    void showPopupWindow(View view, final TextView textView, int menu) {
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.getMenuInflater().inflate(menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.itemDroidSerif:
+                        textView.setText(R.string.common_droid_serif);
+                        break;
+
+                    case R.id.itemRoboto:
+                        textView.setText(R.string.common_roboto);
+                        break;
+
+                    case R.id.itemCaecilia:
+                        textView.setText(R.string.common_caecilia);
+                        break;
+
+                    case R.id.itemNarrow:
+                        textView.setText(R.string.common_narrow);
+                        break;
+
+                    case R.id.itemNormal:
+                        textView.setText(R.string.common_normal);
+                        break;
+
+                    case R.id.itemWide:
+                        textView.setText(R.string.common_wide);
+                        break;
+                }
+                return true;
+            }
+        });
+        popup.show();
     }
 
     /**
@@ -289,6 +493,8 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         listPage = results;
         sizePage = results.size();
         slidePagerAdapter.setListPage(results);
+        slidePagerAdapter.setSettingBook(settingBook);
+        slidePagerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -299,7 +505,6 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     @Override
     public void ContentClick() {
-        LogUtils.e(Variables.TAG, "CLICK");
         if (TOGGLE_ON_CLICK) {
             mSystemUiHider.toggle();
         } else {

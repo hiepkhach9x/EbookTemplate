@@ -2,15 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:yourapp="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_store"
-        android:title="@string/action_settings"
+        android:id="@+id/action_font_setting"
+        android:icon="@drawable/ic_font_setting"
+        android:title="@string/action_font_setting"
         yourapp:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        yourapp:showAsAction="never" />
     <item
         android:id="@+id/action_next"
         android:orderInCategory="100"

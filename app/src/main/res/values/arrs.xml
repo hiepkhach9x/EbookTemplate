@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="font_array">
+        <item>Droid Serif</item>
+        <item>Roboto</item>
+        <item>Caecilia</item>
+    </string-array>
+    <string-array name="margins_array">
+        <item>Narrow</item>
+        <item>Normal</item>
+        <item>Wide</item>
+    </string-array>
+    <string-array name="line_space_array">
+        <item>Narrow</item>
+        <item>Normal</item>
+        <item>Wide</item>
+    </string-array>
+</resources>

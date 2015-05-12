@@ -18,7 +18,7 @@ import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.adapter.CustomDrawerAdapter;
 import com.ctcstudio.ebooktemplate.entities.DrawerItem;
 import com.ctcstudio.ebooktemplate.utils.LogUtils;
-import com.ctcstudio.ebooktemplate.utils.Variables;
+import com.ctcstudio.ebooktemplate.utils.Constant;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mBook = Variables.HM_DATA_BOOK.get(Variables.DATA_BOOK);
+        mBook = Constant.HM_DATA_BOOK.get(Constant.DATA_BOOK);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
@@ -69,7 +69,7 @@ public class HomeActivity extends ActionBarActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LogUtils.d(Variables.TAG, "Choose item menu: " + mDrawerAdapter.getItem(position).getItemName());
+                LogUtils.d(Constant.TAG, "Choose item menu: " + mDrawerAdapter.getItem(position).getItemName());
             }
         });
 
@@ -99,8 +99,8 @@ public class HomeActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     Intent intent = new Intent(HomeActivity.this, ContentChapActivity.class);
-                    intent.putExtra(Variables.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
-                    intent.putExtra(Variables.CHAP_NAME, position + 1);
+                    intent.putExtra(Constant.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
+                    intent.putExtra(Constant.CHAP_NAME, position + 1);
                     startActivity(intent);
                 } catch (IOException e) {
                 }

@@ -129,15 +129,11 @@ public class ContentBookView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(mBackground);
-        StaticLayout staticLayout = new StaticLayout(textContent, mTextPaint, mWidth - (mPaddingRight << 1), Layout.Alignment.ALIGN_NORMAL, spacingMult, spacingAdd, false);
+        StaticLayout staticLayout = new StaticLayout(textContent, mTextPaint, mWidth - mPaddingLeft - mPaddingRight, Layout.Alignment.ALIGN_NORMAL, spacingMult, spacingAdd, false);
         canvas.save();
         canvas.translate(mPaddingLeft, mPaddingTop);
         staticLayout.draw(canvas);
         canvas.restore();
-    }
-
-    public String getTextContent() {
-        return textContent;
     }
 
     public void setTextContent(String textContent) {

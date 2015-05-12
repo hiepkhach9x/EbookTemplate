@@ -2,9 +2,14 @@
 <resources>
     <color name="blueSky">#0b78b7</color>
     <color name="white">#ffffff</color>
+    <color name="white_light">#fcfcfc</color>
     <color name="black">#000000</color>
     <color name="black_light">#F333</color>
+    <color name="gray_dark_light">#d5d5d5</color>
+    <color name="gray_dark">#F555</color>
+    <color name="sepia">#704214</color>
 
+    <color name="sepia_overlay">#ffFDF8A6</color>
     <color name="black_overlay">#66000000</color>
     <color name="blueSky_overlay">#500b78b7</color>
 </resources>

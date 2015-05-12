@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemNarrow"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_narrow" />
+    <item
+        android:id="@+id/itemNormal"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_normal" />
+    <item
+        android:id="@+id/itemWide"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_wide" />
+</menu>

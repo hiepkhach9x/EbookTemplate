@@ -42,6 +42,10 @@ public class ContentChapFragment extends Fragment {
 
     }
 
+    public String getDataContent() {
+        return dataContent;
+    }
+
     public ContentChapFragment() {
     }
 

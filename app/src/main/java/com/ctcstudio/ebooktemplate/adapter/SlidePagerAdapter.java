@@ -30,7 +30,6 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     public void setListPage(ArrayList<String> listPage) {
         this.listPage = listPage;
-        notifyDataSetChanged();
     }
 
     public SettingBook getSettingBook() {
@@ -39,7 +38,10 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     public void setSettingBook(SettingBook settingBook) {
         this.settingBook = settingBook;
-        notifyDataSetChanged();
+    }
+
+    public int getItemPosition(Object item) {
+        return POSITION_NONE;
     }
 
     @Override

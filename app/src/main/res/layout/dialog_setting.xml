@@ -1,6 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/setting_popup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/common_size_10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_52dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            style="@style/TextTitleSetting"
+            android:layout_width="wrap_content"
+            android:text="@string/common_text_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/deCrease"
+                style="@style/DetailButton"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_minus" />
+
+            <TextView
+                android:id="@+id/textSize"
+                style="@style/TextTitleSetting"
+                android:layout_width="wrap_content"
+                android:text="18" />
+
+            <ImageButton
+                android:id="@+id/inCrease"
+                style="@style/DetailButton"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_plus" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_1dp"
+        android:background="@color/gray_dark_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_52dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            style="@style/TextTitleSetting"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/common_font" />
+
+        <TextView
+            android:id="@+id/font"
+            style="@style/Sniper"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/common_roboto" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_1dp"
+        android:background="@color/gray_dark_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_72dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/background_white"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/common_size_60dp"
+                android:background="@drawable/btn_selector_white"
+                android:text="White"
+                android:textColor="@drawable/text_view_selector_white" />
+
+            <ImageView
+                android:id="@+id/state_background_white"
+                android:layout_width="@dimen/common_size_20dp"
+                android:layout_height="@dimen/common_size_20dp"
+                android:src="@drawable/ic_circle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/background_sepia"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/common_size_60dp"
+                android:background="@drawable/btn_selector_sepia"
+                android:text="Sepia"
+                android:textColor="@drawable/text_view_selector_sepia" />
+
+            <ImageView
+                android:id="@+id/state_background_sepia"
+                android:layout_width="@dimen/common_size_20dp"
+                android:layout_height="@dimen/common_size_20dp"
+                android:src="@drawable/ic_circle_v" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/background_black"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/common_size_60dp"
+                android:background="@drawable/btn_selector_black"
+                android:text="Black"
+                android:textColor="@drawable/text_view_selector_black" />
+
+            <ImageView
+                android:id="@+id/state_background_black"
+                android:layout_width="@dimen/common_size_20dp"
+                android:layout_height="@dimen/common_size_20dp"
+                android:src="@drawable/ic_circle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_1dp"
+        android:background="@color/gray_dark_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_52dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            style="@style/TextTitleSetting"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/common_margins" />
+
+        <TextView
+            android:id="@+id/margins"
+            style="@style/Sniper"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/common_roboto"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_1dp"
+        android:background="@color/gray_dark_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_52dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            style="@style/TextTitleSetting"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/common_line_spacing" />
+
+        <TextView
+            android:id="@+id/line_space"
+            style="@style/Sniper"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/common_roboto"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_1dp"
+        android:background="@color/gray_dark_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_size_52dp"
+        android:layout_marginBottom="@dimen/common_size_8dp"
+        android:layout_marginTop="@dimen/common_size_8dp"
+        android:gravity="center_vertical|right">
+
+        <Button
+            android:id="@+id/ok"
+            style="@style/DialogButton"
+            android:layout_width="@dimen/common_size_120dp"
+            android:layout_marginRight="@dimen/common_size_16dp"
+            android:text="ok"
+            android:textSize="@dimen/common_text_size_20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </LinearLayout>

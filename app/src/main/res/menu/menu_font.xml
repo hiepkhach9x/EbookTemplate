@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemDroidSerif"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_droid_serif" />
+    <item
+        android:id="@+id/itemRoboto"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_roboto" />
+    <item
+        android:id="@+id/itemCaecilia"
+        android:icon="@drawable/ic_circle"
+        android:title="@string/common_caecilia" />
+</menu>

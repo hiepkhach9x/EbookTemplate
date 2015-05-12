@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 
 import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.utils.Config;
-import com.ctcstudio.ebooktemplate.utils.Variables;
+import com.ctcstudio.ebooktemplate.utils.Constant;
 
 import java.io.InputStream;
 
@@ -62,7 +62,7 @@ public class SplashActivity extends Activity {
 
             Intent intent = new Intent(SplashActivity.this,
                     HomeActivity.class);
-            Variables.HM_DATA_BOOK.put(Variables.DATA_BOOK, book);
+            Constant.HM_DATA_BOOK.put(Constant.DATA_BOOK, book);
             SplashActivity.this.startActivity(intent);
             SplashActivity.this.finish();
 

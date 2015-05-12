@@ -7,7 +7,7 @@ import nl.siegmann.epublib.domain.Book;
 /**
  * Created by HungHN on 5/9/2015.
  */
-public class Variables {
+public class Constant {
 
     public static final String TAG = "HungHN";
 
@@ -24,4 +24,5 @@ public class Variables {
     public final static int COMPLEX_UNIT_SP = 1;
 
     public final static int COMPLEX_UNIT_DIP = 2;
+
 }
