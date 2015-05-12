@@ -1,9 +1,5 @@
 package com.ctcstudio.ebooktemplate.utils;
 
-import java.util.HashMap;
-
-import nl.siegmann.epublib.domain.Book;
-
 /**
  * Created by HungHN on 5/9/2015.
  */
@@ -17,7 +13,9 @@ public class Constant {
 
     public final static String CHAP_NAME = "CHAP_NAME";
 
-    public final static HashMap<String, Book> HM_DATA_BOOK = new HashMap<String, Book>();
+    public final static String MAX_CHAP = "MAX_CHAP";
+
+    public final static String DATA_SETTING = "SETTING";
 
     public final static String strMarket = "market://search?q=pub:CTC+Studio";
 

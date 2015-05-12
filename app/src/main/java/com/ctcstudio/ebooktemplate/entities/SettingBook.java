@@ -143,11 +143,11 @@ public class SettingBook implements Serializable {
     }
 
     public String toString() {
-        String log = "width: " + width + " height: " + height +
-                " textSize: " + textSize + " textColor: " + textColor +
-                " bottomPadding: " + bottomPadding + " leftPadding: " + leftPadding +
-                " rightPadding: " + rightPadding + " spacingMult: " + spacingMult +
-                " spacingAdd: " + spacingAdd + " font: " + font;
+        String log = width + ":" + height +
+                ":" + textSize + ":" + textColor +
+                ":" + bottomPadding + ":" + leftPadding +
+                ":" + rightPadding + ":" + spacingMult +
+                ":" + spacingAdd + ":" + font;
         return log;
     }
 }

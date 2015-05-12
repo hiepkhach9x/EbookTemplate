@@ -3,9 +3,11 @@ package com.ctcstudio.ebooktemplate.activity;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
@@ -27,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ctcstudio.ebooktemplate.EBookApplication;
 import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.adapter.SlidePagerAdapter;
 import com.ctcstudio.ebooktemplate.entities.SettingBook;
@@ -35,8 +38,12 @@ import com.ctcstudio.ebooktemplate.task.SplitTextTask;
 import com.ctcstudio.ebooktemplate.utils.Constant;
 import com.ctcstudio.ebooktemplate.utils.LogUtils;
 import com.ctcstudio.ebooktemplate.utils.SystemUiHider;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import nl.siegmann.epublib.domain.Book;
 
 /**
  * Created by HungHN on 5/9/2015.
@@ -74,7 +81,6 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
     private int height;
 
     private int fontSize = 20;
-    private int textSize = 20;
 
     private int textColor = 0xffA7573E;
 
@@ -94,15 +100,23 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     private int posChap = 0;
 
+    private int maxChap = 0;
+
     private int sizePage = 0;
+
+    private Book eBook;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_content_chap);
+        eBook = EBookApplication.get().getBook();
+        settingBook = EBookApplication.get().getSettingBook();
         dataContent = getIntent().getStringExtra(Constant.DATA_CHAP);
         posChap = getIntent().getIntExtra(Constant.CHAP_NAME, posChap);
+        maxChap = getIntent().getIntExtra(Constant.MAX_CHAP, maxChap);
         dataContent = Html.fromHtml(dataContent).toString().replaceAll(System.getProperty("line.separator") + System.getProperty("line.separator"), System.getProperty("line.separator"));
         dataContent.replace("  ", " ");
 
@@ -112,10 +126,26 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         initGUI();
         initHideFullscreen();
 
+        mProgressBar.setVisibility(View.VISIBLE);
         new SplitTextTask(this, dataContent, settingBook, this).execute();
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(settingBook);
+        editor.putString(Constant.DATA_SETTING, jsonString);
+        editor.commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void initGUI() {
         viewPager = (ViewPager) findViewById(R.id.viewContent);
@@ -131,26 +161,54 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
 
-        textColor = getResources().getColor(R.color.sepia);
-        pageColor = getResources().getColor(R.color.sepia_overlay);
-        textSize = convertDimension(Constant.COMPLEX_UNIT_SP, fontSize);
-        topPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, topPadding);
-        bottomPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, bottomPadding);
-        leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, leftPadding);
-        rightPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, rightPadding);
-
-        settingBook = new SettingBook(width, height, textSize, textColor, pageColor, topPadding, bottomPadding, leftPadding, rightPadding, spacingAdd, spacingMult, font);
+        textColor = settingBook.getTextColor();
+        pageColor = settingBook.getPageColor();
+        fontSize = convertDimensionToPx(Constant.COMPLEX_UNIT_SP, settingBook.getTextSize());
+        topPadding = settingBook.getTopPadding();
+        bottomPadding = settingBook.getBottomPadding();
+        leftPadding = settingBook.getLeftPadding();
+        rightPadding = settingBook.getRightPadding();
 
         slidePagerAdapter = new SlidePagerAdapter(fragmentManager, listPage, settingBook);
         viewPager.setAdapter(slidePagerAdapter);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 invalidateOptionsMenu();
                 locationPage.setText(getString(R.string.common_page_position, position + 1, sizePage));
             }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    LogUtils.d("HungHN", "SCROLL_STATE_IDLE");
+                }
+                if (state == ViewPager.SCROLL_STATE_SETTLING) {
+                    LogUtils.d("HungHN", "SCROLL_STATE_SETTLING");
+                }
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    LogUtils.d("HungHN", "SCROLL_STATE_DRAGGING");
+                }
+            }
         });
-        mProgressBar.setVisibility(View.GONE);
+    }
+
+    private void loadNewChap(int position) {
+        try {
+            mProgressBar.setVisibility(View.VISIBLE);
+            dataContent = new String(eBook.getContents().get(position).getData());
+            dataContent = Html.fromHtml(dataContent).toString().replaceAll(System.getProperty("line.separator") + System.getProperty("line.separator"), System.getProperty("line.separator"));
+            dataContent.replace("  ", " ");
+            new SplitTextTask(ContentChapActivity.this, dataContent, settingBook, ContentChapActivity.this).execute();
+
+            viewPager.setCurrentItem(0);
+            chap_name.setText(getString(R.string.common_chap_name, posChap));
+        } catch (IOException ex) {
+        }
     }
 
     private int convertDimension(int type, int size) {
@@ -163,6 +221,26 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
                 break;
             case Constant.COMPLEX_UNIT_DIP:
                 returnSize = (int) (size * density);
+                break;
+        }
+        return returnSize;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
+
+    private int convertDimensionToPx(int type, int size) {
+        float density = getResources().getDisplayMetrics().density;
+        float scaledDensity = getResources().getDisplayMetrics().scaledDensity;
+        int returnSize = 0;
+        switch (type) {
+            case Constant.COMPLEX_UNIT_SP:
+                returnSize = (int) (size / scaledDensity);
+                break;
+            case Constant.COMPLEX_UNIT_DIP:
+                returnSize = (int) (size / density);
                 break;
         }
         return returnSize;
@@ -404,11 +482,11 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
                 }
                 settingBook.setTextColor(textColor);
                 settingBook.setPageColor(pageColor);
-                textSize = convertDimension(Constant.COMPLEX_UNIT_SP, fontSize);
-                settingBook.setTextSize(textSize);
+                settingBook.setTextSize(convertDimension(Constant.COMPLEX_UNIT_SP, fontSize));
                 settingBook.setLeftPadding(leftPadding);
                 settingBook.setRightPadding(rightPadding);
                 settingBook.setSpacingMult(spacingMult);
+                EBookApplication.get().setSettingBook(settingBook);
                 mProgressBar.setVisibility(View.VISIBLE);
                 new SplitTextTask(ContentChapActivity.this, dataContent, settingBook, ContentChapActivity.this).execute();
                 dialog.dismiss();
@@ -511,4 +589,5 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             mSystemUiHider.show();
         }
     }
+
 }

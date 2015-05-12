@@ -14,11 +14,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.ctcstudio.ebooktemplate.EBookApplication;
 import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.adapter.CustomDrawerAdapter;
 import com.ctcstudio.ebooktemplate.entities.DrawerItem;
-import com.ctcstudio.ebooktemplate.utils.LogUtils;
 import com.ctcstudio.ebooktemplate.utils.Constant;
+import com.ctcstudio.ebooktemplate.utils.LogUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mBook = Constant.HM_DATA_BOOK.get(Constant.DATA_BOOK);
+        mBook = EBookApplication.get().getBook();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
@@ -101,6 +102,7 @@ public class HomeActivity extends ActionBarActivity {
                     Intent intent = new Intent(HomeActivity.this, ContentChapActivity.class);
                     intent.putExtra(Constant.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
                     intent.putExtra(Constant.CHAP_NAME, position + 1);
+                    intent.putExtra(Constant.MAX_CHAP, mListchap.size());
                     startActivity(intent);
                 } catch (IOException e) {
                 }
