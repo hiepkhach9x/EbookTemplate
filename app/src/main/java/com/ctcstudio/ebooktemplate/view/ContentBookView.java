@@ -67,8 +67,6 @@ public class ContentBookView extends View {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-
-        Log.d("HungHN", "Initialising ctcBookView");
         density = context.getResources().getDisplayMetrics().density;
         scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
 

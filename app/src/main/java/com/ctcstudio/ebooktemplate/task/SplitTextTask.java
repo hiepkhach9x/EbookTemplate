@@ -48,7 +48,7 @@ public class SplitTextTask extends AsyncTask<Void, Void, ArrayList<String>> {
         int offsetI = 0, offsetII = 0;
         StaticLayout layout = new StaticLayout(data, mTextPaint, mSetting.getWidth() - (mSetting.getLeftPadding() + mSetting.getRightPadding()), Layout.Alignment.ALIGN_NORMAL, mSetting.getSpacingMult(), mSetting.getSpacingAdd(), false);
         int totalLines = layout.getLineCount();
-        int linePerPage = layout.getLineForVertical(mSetting.getHeight() - mSetting.getTopPadding() - mSetting.getBottomPadding());
+        int linePerPage = layout.getLineForVertical(mSetting.getHeight() - mSetting.getBottomPadding()) - 1;
         int i = 0;
         do {
             int line = Math.min(linePerPage * (i + 1), totalLines - 1);

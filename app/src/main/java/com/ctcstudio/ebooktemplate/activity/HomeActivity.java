@@ -1,6 +1,8 @@
 package com.ctcstudio.ebooktemplate.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,11 +20,12 @@ import com.ctcstudio.ebooktemplate.EBookApplication;
 import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.adapter.CustomDrawerAdapter;
 import com.ctcstudio.ebooktemplate.entities.DrawerItem;
-import com.ctcstudio.ebooktemplate.utils.Constant;
+import com.ctcstudio.ebooktemplate.utils.Constants;
 import com.ctcstudio.ebooktemplate.utils.LogUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
@@ -51,6 +54,9 @@ public class HomeActivity extends ActionBarActivity {
 
     private ArrayAdapter<String> chapAdapter;
 
+    private SharedPreferences sharedPreferences;
+
+    private int bookMark = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class HomeActivity extends ActionBarActivity {
         setContentView(R.layout.activity_home);
 
         mBook = EBookApplication.get().getBook();
+        sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, MODE_PRIVATE);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
@@ -70,7 +77,26 @@ public class HomeActivity extends ActionBarActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LogUtils.d(Constant.TAG, "Choose item menu: " + mDrawerAdapter.getItem(position).getItemName());
+                LogUtils.d(Constants.TAG, "Choose item menu: " + mDrawerAdapter.getItem(position).getItemName());
+                if (getString(R.string.common_store).equals(mDrawerAdapter.getItem(position).getItemName())) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(Constants.URL_MARKET));
+                    startActivity(intent);
+                } else if (getString(R.string.common_about).equals(mDrawerAdapter.getItem(position).getItemName())) {
+
+                } else if (getString(R.string.common_tienhiep).equals(mDrawerAdapter.getItem(position).getItemName())) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(Constants.URL_MARKET));
+                    startActivity(intent);
+                } else if (getString(R.string.common_kiemhiep).equals(mDrawerAdapter.getItem(position).getItemName())) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(Constants.URL_MARKET));
+                    startActivity(intent);
+                } else if (getString(R.string.common_ngontinh).equals(mDrawerAdapter.getItem(position).getItemName())) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(Constants.URL_MARKET));
+                    startActivity(intent);
+                }
             }
         });
 
@@ -100,16 +126,33 @@ public class HomeActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     Intent intent = new Intent(HomeActivity.this, ContentChapActivity.class);
-                    intent.putExtra(Constant.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
-                    intent.putExtra(Constant.CHAP_NAME, position + 1);
-                    intent.putExtra(Constant.MAX_CHAP, mListchap.size());
+                    intent.putExtra(Constants.DATA_CHAP, new String(mBook.getContents().get(position + 1).getData()));
+                    intent.putExtra(Constants.CHAP_NAME, position + 1);
+                    intent.putExtra(Constants.MAX_CHAP, mListchap.size());
                     startActivity(intent);
                 } catch (IOException e) {
                 }
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    @Override
+    protected void onStart() {
+        bookMark = EBookApplication.get().getBookMark();
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constants.DATA_BOOKMARK, bookMark);
+        editor.commit();
+        super.onDestroy();
     }
 
     @Override
@@ -165,7 +208,20 @@ public class HomeActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort) {
+            Collections.reverse(mListchap);
+            chapAdapter.notifyDataSetChanged();
+            return true;
+        }
+        if (id == R.id.action_bookmark) {
+            try {
+                Intent intent = new Intent(HomeActivity.this, ContentChapActivity.class);
+                intent.putExtra(Constants.DATA_CHAP, new String(mBook.getContents().get(bookMark).getData()));
+                intent.putExtra(Constants.CHAP_NAME, bookMark);
+                intent.putExtra(Constants.MAX_CHAP, mListchap.size());
+                startActivity(intent);
+            } catch (IOException e) {
+            }
             return true;
         }
 

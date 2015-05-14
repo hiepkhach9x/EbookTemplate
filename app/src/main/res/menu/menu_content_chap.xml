@@ -3,7 +3,7 @@
     xmlns:yourapp="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_font_setting"
-        android:icon="@drawable/ic_font_setting"
+        android:icon="@drawable/btn_selector_font"
         android:title="@string/action_font_setting"
         yourapp:showAsAction="ifRoom" />
     <item

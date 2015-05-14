@@ -17,6 +17,8 @@ public class EBookApplication extends Application {
 
     private Book eBook;
 
+    private int bookMark;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,5 +43,13 @@ public class EBookApplication extends Application {
 
     public void setSettingBook(SettingBook settingBook) {
         this.settingBook = settingBook;
+    }
+
+    public int getBookMark() {
+        return bookMark;
+    }
+
+    public void setBookMark(int bookMark) {
+        this.bookMark = bookMark;
     }
 }

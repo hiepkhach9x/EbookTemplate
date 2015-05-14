@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/app/libs/slf4j-android-1.6.1-RC1.jar" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/app/src/main/assets/books/thuongthien.epub" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/app/src/main/assets/fonts" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/assets/fonts/DroidSans.ttf" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/assets/fonts/DroidSerif-Regular.ttf" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/assets/fonts/Roboto-Regular.ttf" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/ctcstudio/ebooktemplate/adapter/CustomDrawerAdapter.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/ctcstudio/ebooktemplate/entities/DrawerItem.java" charset="windows-1252" />

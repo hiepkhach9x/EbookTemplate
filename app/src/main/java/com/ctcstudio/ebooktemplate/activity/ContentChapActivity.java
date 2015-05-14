@@ -1,13 +1,14 @@
 package com.ctcstudio.ebooktemplate.activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
@@ -35,9 +36,10 @@ import com.ctcstudio.ebooktemplate.adapter.SlidePagerAdapter;
 import com.ctcstudio.ebooktemplate.entities.SettingBook;
 import com.ctcstudio.ebooktemplate.fragment.ContentChapFragment;
 import com.ctcstudio.ebooktemplate.task.SplitTextTask;
-import com.ctcstudio.ebooktemplate.utils.Constant;
+import com.ctcstudio.ebooktemplate.utils.Constants;
 import com.ctcstudio.ebooktemplate.utils.LogUtils;
 import com.ctcstudio.ebooktemplate.utils.SystemUiHider;
+import com.ctcstudio.ebooktemplate.view.EBookViewPagerView;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -48,7 +50,7 @@ import nl.siegmann.epublib.domain.Book;
 /**
  * Created by HungHN on 5/9/2015.
  */
-public class ContentChapActivity extends ActionBarActivity implements SplitTextTask.onLoadAsync, ContentChapFragment.ContentCallBack {
+public class ContentChapActivity extends ActionBarActivity implements SplitTextTask.onLoadAsync, ContentChapFragment.ContentCallBack, EBookViewPagerView.OnSwipeOutListener {
 
     private static final boolean AUTO_HIDE = true;
 
@@ -66,7 +68,7 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     private ProgressBar mProgressBar;
 
-    private ViewPager viewPager;
+    private EBookViewPagerView viewPager;
 
     private SlidePagerAdapter slidePagerAdapter;
 
@@ -108,17 +110,20 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     private SharedPreferences sharedPreferences;
 
+    private boolean isChangeChap = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_chap);
         eBook = EBookApplication.get().getBook();
         settingBook = EBookApplication.get().getSettingBook();
-        dataContent = getIntent().getStringExtra(Constant.DATA_CHAP);
-        posChap = getIntent().getIntExtra(Constant.CHAP_NAME, posChap);
-        maxChap = getIntent().getIntExtra(Constant.MAX_CHAP, maxChap);
+        dataContent = getIntent().getStringExtra(Constants.DATA_CHAP);
+        posChap = getIntent().getIntExtra(Constants.CHAP_NAME, posChap);
+        maxChap = getIntent().getIntExtra(Constants.MAX_CHAP, maxChap);
         dataContent = Html.fromHtml(dataContent).toString().replaceAll(System.getProperty("line.separator") + System.getProperty("line.separator"), System.getProperty("line.separator"));
         dataContent.replace("  ", " ");
+        sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, MODE_PRIVATE);
 
         Display display = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         width = display.getWidth();
@@ -131,24 +136,8 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(settingBook);
-        editor.putString(Constant.DATA_SETTING, jsonString);
-        editor.commit();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private void initGUI() {
-        viewPager = (ViewPager) findViewById(R.id.viewContent);
+        viewPager = (EBookViewPagerView) findViewById(R.id.viewContent);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         chap_name = (TextView) findViewById(R.id.name_chap);
@@ -160,14 +149,16 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         chap_name.setText(getString(R.string.common_chap_name, posChap));
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
+        viewPager.setOnSwipeOutListener(this);
 
         textColor = settingBook.getTextColor();
         pageColor = settingBook.getPageColor();
-        fontSize = convertDimensionToPx(Constant.COMPLEX_UNIT_SP, settingBook.getTextSize());
+        fontSize = convertDimensionToPx(Constants.COMPLEX_UNIT_SP, settingBook.getTextSize());
         topPadding = settingBook.getTopPadding();
         bottomPadding = settingBook.getBottomPadding();
         leftPadding = settingBook.getLeftPadding();
         rightPadding = settingBook.getRightPadding();
+        font = settingBook.getFont();
 
         slidePagerAdapter = new SlidePagerAdapter(fragmentManager, listPage, settingBook);
         viewPager.setAdapter(slidePagerAdapter);
@@ -184,17 +175,20 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    LogUtils.d("HungHN", "SCROLL_STATE_IDLE");
-                }
-                if (state == ViewPager.SCROLL_STATE_SETTLING) {
-                    LogUtils.d("HungHN", "SCROLL_STATE_SETTLING");
-                }
-                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    LogUtils.d("HungHN", "SCROLL_STATE_DRAGGING");
-                }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EBookApplication.get().setBookMark(posChap);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(settingBook);
+        editor.putInt(Constants.DATA_BOOKMARK, posChap);
+        editor.putString(Constants.DATA_SETTING, jsonString);
+        editor.commit();
     }
 
     private void loadNewChap(int position) {
@@ -203,9 +197,8 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             dataContent = new String(eBook.getContents().get(position).getData());
             dataContent = Html.fromHtml(dataContent).toString().replaceAll(System.getProperty("line.separator") + System.getProperty("line.separator"), System.getProperty("line.separator"));
             dataContent.replace("  ", " ");
+            isChangeChap = true;
             new SplitTextTask(ContentChapActivity.this, dataContent, settingBook, ContentChapActivity.this).execute();
-
-            viewPager.setCurrentItem(0);
             chap_name.setText(getString(R.string.common_chap_name, posChap));
         } catch (IOException ex) {
         }
@@ -216,10 +209,10 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         float scaledDensity = getResources().getDisplayMetrics().scaledDensity;
         int returnSize = 0;
         switch (type) {
-            case Constant.COMPLEX_UNIT_SP:
+            case Constants.COMPLEX_UNIT_SP:
                 returnSize = (int) (size * scaledDensity);
                 break;
-            case Constant.COMPLEX_UNIT_DIP:
+            case Constants.COMPLEX_UNIT_DIP:
                 returnSize = (int) (size * density);
                 break;
         }
@@ -236,10 +229,10 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         float scaledDensity = getResources().getDisplayMetrics().scaledDensity;
         int returnSize = 0;
         switch (type) {
-            case Constant.COMPLEX_UNIT_SP:
+            case Constants.COMPLEX_UNIT_SP:
                 returnSize = (int) (size / scaledDensity);
                 break;
-            case Constant.COMPLEX_UNIT_DIP:
+            case Constants.COMPLEX_UNIT_DIP:
                 returnSize = (int) (size / density);
                 break;
         }
@@ -298,7 +291,7 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtils.e(Constant.TAG, "CLICK");
+                LogUtils.e(Constants.TAG, "CLICK");
                 if (TOGGLE_ON_CLICK) {
                     mSystemUiHider.toggle();
                 } else {
@@ -338,9 +331,21 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             return true;
         }
         if (id == R.id.action_next) {
+            if (posChap <= maxChap) {
+                posChap++;
+                loadNewChap(posChap);
+            } else {
+                showDialogChap(getString(R.string.dialog_message_chap_end));
+            }
             return true;
         }
         if (id == R.id.action_previous) {
+            if (posChap >= 1) {
+                posChap--;
+                loadNewChap(posChap);
+            } else {
+                showDialogChap(getString(R.string.dialog_message_chap_first));
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -364,6 +369,15 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         final ImageView imgSepia = (ImageView) dialog.findViewById(R.id.state_background_sepia);
         final ImageView imgBlack = (ImageView) dialog.findViewById(R.id.state_background_black);
 
+        if ("DroidSerif-Regular.ttf".equals(font)) {
+            fontTextView.setText(R.string.common_droid_serif);
+
+        } else if ("Roboto-Regular.ttf".equals(font)) {
+            fontTextView.setText(R.string.common_roboto);
+
+        } else if ("DroidSans.ttf".equals(font)) {
+            fontTextView.setText(R.string.common_droid_sans);
+        }
         textFontSize.setText(fontSize + "");
         if (textColor == getResources().getColor(R.color.white_light)) {
             imgWhite.setImageResource(R.drawable.ic_circle);
@@ -379,13 +393,13 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             imgBlack.setImageResource(R.drawable.ic_circle);
             imgSepia.setImageResource(R.drawable.ic_circle);
         }
-        if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 10)) {
+        if (leftPadding == convertDimension(Constants.COMPLEX_UNIT_DIP, 10)) {
             margins.setText(R.string.common_narrow);
 
-        } else if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 20)) {
+        } else if (leftPadding == convertDimension(Constants.COMPLEX_UNIT_DIP, 20)) {
             margins.setText(R.string.common_normal);
 
-        } else if (leftPadding == convertDimension(Constant.COMPLEX_UNIT_DIP, 30)) {
+        } else if (leftPadding == convertDimension(Constants.COMPLEX_UNIT_DIP, 30)) {
             margins.setText(R.string.common_wide);
         }
         if (spacingMult == 1.0f) {
@@ -463,13 +477,13 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
             @Override
             public void onClick(View v) {
                 if (margins.getText().toString().trim().equals(getString(R.string.common_narrow).trim())) {
-                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 10);
+                    leftPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, 10);
 
                 } else if (margins.getText().toString().trim().equals(getString(R.string.common_normal).trim())) {
-                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 20);
+                    leftPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, 20);
 
                 } else if (margins.getText().toString().trim().equals(getString(R.string.common_wide).trim())) {
-                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, 30);
+                    leftPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, 30);
                 }
                 if (lineSpace.getText().toString().trim().equals(getString(R.string.common_narrow).trim())) {
                     spacingMult = 1.0f;
@@ -482,10 +496,11 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
                 }
                 settingBook.setTextColor(textColor);
                 settingBook.setPageColor(pageColor);
-                settingBook.setTextSize(convertDimension(Constant.COMPLEX_UNIT_SP, fontSize));
+                settingBook.setTextSize(convertDimension(Constants.COMPLEX_UNIT_SP, fontSize));
                 settingBook.setLeftPadding(leftPadding);
                 settingBook.setRightPadding(rightPadding);
                 settingBook.setSpacingMult(spacingMult);
+                settingBook.setFont(font);
                 EBookApplication.get().setSettingBook(settingBook);
                 mProgressBar.setVisibility(View.VISIBLE);
                 new SplitTextTask(ContentChapActivity.this, dataContent, settingBook, ContentChapActivity.this).execute();
@@ -505,14 +520,17 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
                 switch (item.getItemId()) {
                     case R.id.itemDroidSerif:
                         textView.setText(R.string.common_droid_serif);
+                        font = "DroidSerif-Regular.ttf";
                         break;
 
                     case R.id.itemRoboto:
                         textView.setText(R.string.common_roboto);
+                        font = "Roboto-Regular.ttf";
                         break;
 
-                    case R.id.itemCaecilia:
-                        textView.setText(R.string.common_caecilia);
+                    case R.id.itemDroidSans:
+                        textView.setText(R.string.common_droid_sans);
+                        font = "DroidSans.ttf";
                         break;
 
                     case R.id.itemNarrow:
@@ -573,6 +591,10 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         slidePagerAdapter.setListPage(results);
         slidePagerAdapter.setSettingBook(settingBook);
         slidePagerAdapter.notifyDataSetChanged();
+        if (isChangeChap) {
+            viewPager.setCurrentItem(0);
+            isChangeChap = false;
+        }
     }
 
     @Override
@@ -590,4 +612,38 @@ public class ContentChapActivity extends ActionBarActivity implements SplitTextT
         }
     }
 
+    public ContentChapActivity() {
+        super();
+    }
+
+    @Override
+    public void onSwipeOutAtEnd() {
+        if (posChap <= maxChap) {
+            posChap++;
+            loadNewChap(posChap);
+        } else {
+            showDialogChap(getString(R.string.dialog_message_chap_end));
+        }
+    }
+
+    @Override
+    public void onSwipeOutAtStart() {
+        if (posChap >= 1) {
+            posChap--;
+            loadNewChap(posChap);
+        } else {
+            showDialogChap(getString(R.string.dialog_message_chap_first));
+        }
+    }
+
+    private void showDialogChap(String message) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 }

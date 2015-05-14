@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -17,7 +16,7 @@ import com.ctcstudio.ebooktemplate.EBookApplication;
 import com.ctcstudio.ebooktemplate.R;
 import com.ctcstudio.ebooktemplate.entities.SettingBook;
 import com.ctcstudio.ebooktemplate.utils.Config;
-import com.ctcstudio.ebooktemplate.utils.Constant;
+import com.ctcstudio.ebooktemplate.utils.Constants;
 import com.google.gson.Gson;
 
 import java.io.InputStream;
@@ -69,7 +68,7 @@ public class SplashActivity extends Activity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.VISIBLE);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, MODE_PRIVATE);
         IntentLauncher launcher = new IntentLauncher();
         launcher.start();
     }
@@ -81,19 +80,19 @@ public class SplashActivity extends Activity {
         @Override
         public void run() {
             try {
-                String jsonSetting = sharedPreferences.getString(Constant.DATA_SETTING, "");
+                String jsonSetting = sharedPreferences.getString(Constants.DATA_SETTING, "");
                 if (jsonSetting.isEmpty()) {
                     textColor = getResources().getColor(R.color.sepia);
                     pageColor = getResources().getColor(R.color.sepia_overlay);
-                    textSize = convertDimension(Constant.COMPLEX_UNIT_SP, fontSize);
-                    topPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, topPadding);
-                    bottomPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, bottomPadding);
-                    leftPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, leftPadding);
-                    rightPadding = convertDimension(Constant.COMPLEX_UNIT_DIP, rightPadding);
+                    textSize = convertDimension(Constants.COMPLEX_UNIT_SP, fontSize);
+                    topPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, topPadding);
+                    bottomPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, bottomPadding);
+                    leftPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, leftPadding);
+                    rightPadding = convertDimension(Constants.COMPLEX_UNIT_DIP, rightPadding);
                     settingBook = new SettingBook(width, height, textSize, textColor, pageColor, topPadding, bottomPadding, leftPadding, rightPadding, spacingAdd, spacingMult, font);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     jsonSetting = gson.toJson(settingBook);
-                    editor.putString(Constant.DATA_SETTING, jsonSetting);
+                    editor.putString(Constants.DATA_SETTING, jsonSetting);
                     editor.commit();
                 } else {
                     settingBook = gson.fromJson(jsonSetting, SettingBook.class);
@@ -115,7 +114,8 @@ public class SplashActivity extends Activity {
                     mProgressBar.setVisibility(View.GONE);
                 }
             });
-
+            int bookMark = sharedPreferences.getInt(Constants.DATA_BOOKMARK, 1);
+            EBookApplication.get().setBookMark(bookMark);
             EBookApplication.get().setSettingBook(settingBook);
             EBookApplication.get().setBook(book);
             Intent intent = new Intent(SplashActivity.this,
@@ -131,10 +131,10 @@ public class SplashActivity extends Activity {
         float scaledDensity = getResources().getDisplayMetrics().scaledDensity;
         int returnSize = 0;
         switch (type) {
-            case Constant.COMPLEX_UNIT_SP:
+            case Constants.COMPLEX_UNIT_SP:
                 returnSize = (int) (size * scaledDensity);
                 break;
-            case Constant.COMPLEX_UNIT_DIP:
+            case Constants.COMPLEX_UNIT_DIP:
                 returnSize = (int) (size * density);
                 break;
         }

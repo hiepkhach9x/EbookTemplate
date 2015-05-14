@@ -1,10 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_sort"
+        android:icon="@drawable/btn_selector_sort"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_sort"
+        yourapp:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bookmark"
+        android:icon="@drawable/btn_selector_bookmark"
+        android:orderInCategory="100"
+        android:title="@string/action_bookmark"
+        yourapp:showAsAction="ifRoom" />
 </menu>
